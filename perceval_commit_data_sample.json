@@ -1,0 +1,55 @@
+{
+  'backend_name': 'Git',
+  'uuid': '691fb5d7b8e8dbddc65949ff3ca062f97d90d3f5',
+  'origin': 'https://github.com/grimoirelab/perceval',
+  'data': {
+    'AuthorDate': 'Sun Jan 3 20:20:36 2016 +0100',
+    'files': [
+      {
+        'indexes': [
+          '0506fa5...',
+          'c364c96...'
+        ],
+        'modes': [
+          '100644',
+          '100644'
+        ],
+        'removed': '0',
+        'added': '64',
+        'file': 'perceval/backends/git.py',
+        'action': 'M'
+      },
+      {
+        'indexes': [
+          '51dd950...',
+          '286736f...'
+        ],
+        'modes': [
+          '100644',
+          '100644'
+        ],
+        'removed': '1',
+        'added': '42',
+        'file': 'tests/test_git.py',
+        'action': 'M'
+      }
+    ],
+    'commit': '436a4499cf6c375132fe25767602a6f5f0d11d0e',
+    'CommitDate': 'Mon Jan 4 02:08:05 2016 +0100',
+    'Author': 'Santiago Dueñas <sduenas@bitergia.com>',
+    'refs': [
+      
+    ],
+    'parents': [
+      '26d2f7b1b83495a4784a2d22cf4f8859bd9c5be8'
+    ],
+    'message': '[git] Add Git backend class\n\nThis backed fetchs commits from a Git log file. Commits are returned\nin reverse order, or in other words, from the oldest to the newest.',
+    'Commit': 'Santiago Dueñas <sduenas@bitergia.com>'
+  },
+  'perceval_version': '0.4.0',
+  'backend_version': '0.6.0',
+  'category': 'commit',
+  'updated_on': 1451869685.0,
+  'timestamp': 1478880296.602087,
+  'tag': 'https://github.com/grimoirelab/perceval'
+}
