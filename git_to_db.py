@@ -17,15 +17,22 @@ from dateutil.relativedelta import relativedelta
 import datetime
 
 from dbo import *
+from optparse import OptionParser
+
+usage = "usage: %prog [options] -r path-to-repo"
+parser = OptionParser(usage=usage)
+parser.add_option("-r", "--repo", metavar="REPO", help="Path to repo"),
+
+(options, args) = parser.parse_args()
+
+print('Extracting information for %s...' % options.repo)
 
 try:
     with db.atomic():
-        # for msg in Messages.select():
-        #     print(msg.message_id)
 
         commit_count = 0
 
-        git = Git('/home/mrx/src/git-mail-connector/repo/zeppelin', 'zeppelin')
+        git = Git(options.repo, 'repo')
         commits = git.fetch()
 
         for commit in commits:
