@@ -15,6 +15,7 @@ import unittest
 import dateutil.tz
 from dateutil.relativedelta import relativedelta
 import datetime
+from playhouse.sqlite_ext import SqliteExtDatabase
 
 from dbo import *
 from optparse import OptionParser
@@ -22,17 +23,27 @@ from optparse import OptionParser
 usage = "usage: %prog [options] -r path-to-repo"
 parser = OptionParser(usage=usage)
 parser.add_option("-r", "--repo", metavar="REPO", help="Path to repo"),
+parser.add_option("-d", "--database", metavar="DB", help="Name of the database"),
 
 (options, args) = parser.parse_args()
 
-print('Extracting information for %s...' % options.repo)
+if not options.repo or not options.database:
+    print ('Usage: python %prog -h')
+    sys.exit()
+
+database = SqliteExtDatabase('%s.db' % options.database)
+database_proxy.initialize(database)
+database.connect()
+database.create_tables([CommitDBO, CommitFileDBO], safe=True)
+
+print('Extracting information for %s to %s...' % (options.repo, options.database))
 
 try:
-    with db.atomic():
+    with database.atomic():
 
         commit_count = 0
 
-        git = Git(options.repo, 'repo')
+        git = Git(options.repo, 'output')
         commits = git.fetch()
 
         for commit in commits:

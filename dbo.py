@@ -3,11 +3,13 @@ from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
 import datetime
 
-db = SqliteExtDatabase('apache.db')
+database_proxy = Proxy()
+
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = database_proxy
+
 
 class CommitDBO(BaseModel):
     uuid = TextField(unique=False)
@@ -29,6 +31,7 @@ class CommitFileDBO(BaseModel):
     commit_date = DateTimeField()
     commit_author = TextField()
 
+
 class Messages(BaseModel):
     message_id = CharField(primary_key=True)
     mailing_list_url = CharField()
@@ -41,10 +44,3 @@ class Messages(BaseModel):
     message_body = TextField()
     is_response_of = CharField()
     mail_path = TextField()
-
-
-
-# connect and create tables
-db.connect()
-db.create_tables([CommitDBO, CommitFileDBO], safe=True)
-
