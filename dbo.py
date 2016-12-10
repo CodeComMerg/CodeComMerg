@@ -52,5 +52,6 @@ class Messages(BaseModel):
 
 class FileHistoryDBO(BaseModel):
     file = TextField()
-    inactive_since = IntegerField()
+    number_of_activities = IntegerField()
     last_activity_after = IntegerField()
+    inactive_since = IntegerField()

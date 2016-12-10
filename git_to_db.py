@@ -145,8 +145,9 @@ try:
 
                 file_history = FileHistoryDBO(
                     file=f.file,
-                    inactive_since=inactive_since,
-                    last_activity_after=last_activity_after
+                    number_of_activities=commits.count(),
+                    last_activity_after=last_activity_after,
+                    inactive_since=inactive_since
                 )
                 file_history.save()
             print('SUCCESS: %s files history added to db.' % files.count())                
