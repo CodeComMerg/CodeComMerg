@@ -13,6 +13,8 @@ import tempfile
 import unittest
 
 import dateutil.tz
+from datetime import datetime, date
+from dateutil import parser as date_parser
 from dateutil.relativedelta import relativedelta
 import datetime
 from playhouse.sqlite_ext import SqliteExtDatabase
@@ -20,21 +22,22 @@ from playhouse.sqlite_ext import SqliteExtDatabase
 from dbo import *
 from optparse import OptionParser
 
-usage = "usage: %prog [options] -r path-to-repo"
-parser = OptionParser(usage=usage)
-parser.add_option("-r", "--repo", metavar="REPO", help="Path to repo"),
-parser.add_option("-d", "--database", metavar="DB", help="Name of the database"),
+usage = "Usage: %prog [options] -r path-to-repo -n repo-name -d database-name"
+option_parser = OptionParser(usage=usage)
+option_parser.add_option("-r", "--repo", metavar="REPO", help="Path to repo"),
+option_parser.add_option("-n", "--name", metavar="NAME", help="Name of repo"),
+option_parser.add_option("-d", "--database", metavar="DB", help="Name of the database"),
 
-(options, args) = parser.parse_args()
+(options, args) = option_parser.parse_args()
 
-if not options.repo or not options.database:
-    print ('Usage: python %prog -h')
+if not options.repo or not options.name or not options.database:
+    print (usage)
     sys.exit()
 
 database = SqliteExtDatabase('%s.db' % options.database)
 database_proxy.initialize(database)
 database.connect()
-database.create_tables([CommitDBO, CommitFileDBO], safe=True)
+database.create_tables([CommitDBO, CommitFileDBO, FileHistoryDBO], safe=True)
 
 print('Extracting information for %s to %s...' % (options.repo, options.database))
 
@@ -43,7 +46,7 @@ try:
 
         commit_count = 0
 
-        git = Git(options.repo, 'output')
+        git = Git(options.repo, options.name)
         commits = git.fetch()
 
         for commit in commits:
@@ -108,11 +111,50 @@ try:
                     except Exception as fex:
                         print('FILE ERROR')
                         print(fex)
+
             except Exception as cex:
                 print('COMMIT ERROR')
                 print(cex)
         print('SUCCESS: %s commits added to db.' % commit_count)
+
+        # process files in-activities
+        try:
+            files = CommitFileDBO.select((fn.Distinct(CommitFileDBO.file)))
+
+            for f in files:
+                print('File:' + f.file)
+                
+                commits = CommitFileDBO.select().where(CommitFileDBO.file==f.file).order_by(CommitFileDBO.commit_date)
+
+                if commits.count() > 0:
+                    last = commits[0]
+                    last_commit_on = parser.parse(last.commit_date)
+                    last_commit_on = last_commit_on.replace(tzinfo=None)
+                    datetime_on = datetime.now()
+                    inactive_since_obj = datetime_on - last_commit_on
+                    inactive_since = inactive_since_obj.days
+                    print('--- --- days since last activity %s days' % inactive_since)
+
+                if commits.count() > 1:
+                    slast = commits[1]           
+                    last_activity_after_obj = parser.parse(last.commit_date) - parser.parse(slast.commit_date)
+                    last_activity_after = last_activity_after_obj.days
+                    print('--- --- last activity was after %s days' % inactive_since)
+                else:
+                    last_activity_after = 0
+
+                file_history = FileHistoryDBO(
+                    file=f.file,
+                    inactive_since=inactive_since,
+                    last_activity_after=last_activity_after
+                )
+                file_history.save()
+            print('SUCCESS: %s files history added to db.' % files.count())                
+        except Exception as e:
+            print('Error processing file activities.')
+            print(e)
 except Exception as e:
     print('ERROR')
     print(e)
+
 
