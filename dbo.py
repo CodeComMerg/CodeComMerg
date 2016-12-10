@@ -50,21 +50,7 @@ class Messages(BaseModel):
     mail_path = TextField()
 
 
-# files = CommitFileDBO.select((fn.Distinct(CommitFileDBO.file)))
-
-# for f in files:
-#     print(f.file)
-#     commits = CommitFileDBO.select().where(CommitFileDBO.file==f.file).order_by(CommitFileDBO.commit_date)
-
-#     if commits.count() > 0:
-#         last = commits[0]
-
-#         noActivity = datetime.now() - parser.parse(last.commit_date)
-#         print('--- --- %s' % noActivity.days)
-
-#     if commits.count() > 1:
-#         slast = commits[1]
-#         print('--- %s' % slast.commit_date)
-        
-#         secondActivity = parser.parse(last.commit_date) - parser.parse(slast.commit_date)
-#         print('--- --- %s' % secondActivity.days)
+class FileHistoryDBO(BaseModel):
+    file = TextField()
+    inactive_since = IntegerField()
+    last_activity_after = IntegerField()
