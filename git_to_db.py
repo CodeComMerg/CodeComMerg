@@ -100,7 +100,7 @@ try:
 
                         commit_file_dbo = CommitFileDBO(
                             commit=commit_dbo,
-                            commit_date=commit_dbo.CommitDate,
+                            commit_date=date_parser.parse(commit_dbo.CommitDate),
                             file=file,
                             action=action,
                             removed=removed,
@@ -124,11 +124,11 @@ try:
             for f in files:
                 print('File:' + f.file)
                 
-                commits = CommitFileDBO.select().where(CommitFileDBO.file==f.file).order_by(CommitFileDBO.commit_date)
-
+                commits = CommitFileDBO.select().where(CommitFileDBO.file==f.file).order_by(-CommitFileDBO.commit_date)
+                
                 if commits.count() > 0:
                     last = commits[0]
-                    last_commit_on = parser.parse(last.commit_date)
+                    last_commit_on = date_parser.parse(last.commit_date)
                     last_commit_on = last_commit_on.replace(tzinfo=None)
                     datetime_on = datetime.now()
                     inactive_since_obj = datetime_on - last_commit_on
@@ -137,11 +137,11 @@ try:
 
                 if commits.count() > 1:
                     slast = commits[1]           
-                    last_activity_after_obj = parser.parse(last.commit_date) - parser.parse(slast.commit_date)
+                    last_activity_after_obj = date_parser.parse(last.commit_date) - date_parser.parse(slast.commit_date)
                     last_activity_after = last_activity_after_obj.days
-                    print('--- --- last activity was after %s days' % inactive_since)
+                    print('--- --- last activity was after %s days' % last_activity_after)
                 else:
-                    last_activity_after = 0
+                    last_activity_after = -1
 
                 file_history = FileHistoryDBO(
                     file=f.file,
