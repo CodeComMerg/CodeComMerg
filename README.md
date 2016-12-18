@@ -7,7 +7,8 @@ Code Communication Merge is designed to extract history of commit data of projec
 # Download
 
 Goto the the directory of the project, where requirements.txt is located
-    git clone https://github.com/CodeComMerg/CodeComMerg.git
+
+git clone https://github.com/CodeComMerg/CodeComMerg.git
     
 # Requirements
 
