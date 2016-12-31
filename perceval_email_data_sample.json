@@ -1,0 +1,31 @@
+{
+  'From': '"William A. Rowe Jr." <wrowe@rowe-clan.net>',
+  'Date': 'Mon, 30 Apr 2012 20:32:58 -0500',
+  'Precedence': 'bulk',
+  'Received-SPF': 'neutral (nike.apache.org: local policy)',
+  'Return-Path': '<dev-return-75304-apmail-httpd-dev-archive=httpd.apache.org@httpd.apache.org>',
+  'Delivered-To': 'mailing list dev@httpd.apache.org',
+  'Subject': 'Re: are the *.exp files still used by any platform?',
+  'unixfrom': 'dev-return-75304-apmail-httpd-dev-archive=httpd.apache.org@httpd.apache.org  Tue May  1 01:33:29 2012',
+  'Reply-To': 'dev@httpd.apache.org',
+  'list-unsubscribe': '<mailto:dev-unsubscribe@httpd.apache.org>',
+  'X-ASF-Spam-Status': 'No, hits=0.7 required=5.0\n\ttests=RCVD_IN_DNSWL_NONE,SPF_NEUTRAL',
+  'In-Reply-To': '<4F9DCDD5.7070605@apache.org>',
+  'Received': 'from [192.168.1.80] ([76.252.112.72])\n\tby m1plsmtpa01-06.prod.mesa1.secureserver.net with \n\tid 4RYv1j0061Zmh9Y01RYwLS; Mon, 30 Apr 2012 18:32:56 -0700',
+  'X-Spam-Check-By': 'apache.org',
+  'References': '<4F9DA7E8.8030403@apache.org> <CALK=YjPVTKP_T89mtsKuQAq145WJSeMQsJ57um8HZWFOkPFo4w@mail.gmail.com> <4F9DCDD5.7070605@apache.org>',
+  'list-help': '<mailto:dev-help@httpd.apache.org>',
+  'Content-Transfer-Encoding': '7bit',
+  'X-Original-To': 'apmail-httpd-dev-archive@www.apache.org',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20120420 Thunderbird/12.0',
+  'List-Post': '<mailto:dev@httpd.apache.org>',
+  'Message-ID': '<4F9F3D4A.5090008@rowe-clan.net>',
+  'Mailing-List': 'contact dev-help@httpd.apache.org; run by ezmlm',
+  'MIME-Version': '1.0',
+  'Content-Type': 'text/plain; charset=UTF-8',
+  'List-Id': '<dev.httpd.apache.org>',
+  'body': {
+    'plain': "On 4/29/2012 6:25 PM, Guenter Knauf wrote:\n> Am 29.04.2012 22:59, schrieb Eric Covener:\n>> AFAICT AIX/libtool uses export files generated during the build, but\n>> does not use the checked in ones.\n> well, thats the point: if those in svn were used then a lot would be missing since all\n> newer modules dont have them ...\n\nWindows does not need them; if OS/2, Netware and AIX don't either, let's\nplease axe them from svn.\n\n"
+  },
+  'To': 'dev@httpd.apache.org'
+}
