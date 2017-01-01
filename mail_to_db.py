@@ -1,39 +1,50 @@
 from perceval.backends.pipermail import Pipermail
 from perceval.backends.mbox import MBox, MBoxArchive
-from os import listdir
-from os.path import isfile, join
 from playhouse.sqlite_ext import SqliteExtDatabase
 from dbo import *
+from optparse import OptionParser
+import sys
+import json 
 
 try:
-    optionsdatabase = 'test2212'
-    database = SqliteExtDatabase('%s.db' % optionsdatabase)
+    usage = "Usage: %prog [options] -u uri-to-email-archieve -n folder-name -d database-name -b pipermail or mbox"
+    option_parser = OptionParser(usage=usage)
+    option_parser.add_option("-u", "--uri", metavar="URI", help="URI to archieve"),
+    option_parser.add_option("-n", "--name", metavar="NAME", help="Name of the folder"),
+    option_parser.add_option("-d", "--database", metavar="DB", help="Name of the database"),
+    option_parser.add_option("-b", "--backend", metavar="BACKEND", help="Name of the backend"),
+
+    (options, args) = option_parser.parse_args()
+
+    if not options.uri or not options.name or not options.database or not options.backend:
+        print (usage)
+        sys.exit()
+
+    database = SqliteExtDatabase('%s.db' % options.database)
     database_proxy.initialize(database)
     database.connect()
     database.create_tables([EmailDBO], safe=True)
 
+    print('Extracting information from %s to %s.db...' % (options.uri, options.database))
 
-    archives_url = 'http://mail-archives.apache.org/mod_mbox/httpd-dev/'
-    dirpath_to_store = 'httpd-dev'
+    if options.backend is 'pipermail':
+        pipermail = Pipermail(options.uri, options.name)
+        messages = pipermail.fetch()
+    elif options.backend is 'mbox':    
+        mbox = MBox(uri=options.uri, dirpath=options.name)
+        messages = mbox.fetch()
 
-    print('Extracting information for %s to %s...' % (archives_url, dirpath_to_store))
+    print('Reading information from %s to insert into %s.db...' % (options.name, options.database))
 
-    # mailing_archives = Pipermail(url, dirpath)
-    # mailing_archives.fetch()
-
-    mbox = MBox(uri=archives_url, dirpath=dirpath_to_store)
-    parsed_mbox = mbox.fetch()
-    
     try:
         with database.atomic():
             success_messages_count = 0
             error_messages_count = 0
-            for key in parsed_mbox:
+            for message in messages:
                 try:
 
                     success_messages_count += 1
-                    data = key['data']
-                    # print(data)
+                    data = message['data']
 
                     email_from = data['From']
 
@@ -78,8 +89,6 @@ try:
                     else:
                         references = 'NA'
                     
-
-
                     list_help = data['list-help']
 
                     if 'Content-Transfer-Encoding' in data:
@@ -103,12 +112,10 @@ try:
                     else:
                         mime_version = 'NA'
 
-
                     if 'Content-Type' in data:
                         content_type = data['Content-Type']
                     else:
                         content_type = 'NA'
-
 
                     list_id = data['List-Id']
 
@@ -119,7 +126,6 @@ try:
                             body_plain = data['body']['html']
                     else:
                         body_plain = 'NA'
-
 
                     email_dbo = EmailDBO(
                                     email_from = email_from,
