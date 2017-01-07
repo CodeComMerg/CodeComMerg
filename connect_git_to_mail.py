@@ -5,15 +5,25 @@ from dbo import *
 import re
 from datetime import datetime, timedelta
 from dateutil import parser as date_parser
+from optparse import OptionParser
 
 try:
-    # database = SqliteExtDatabase('%s.db' % options.database)
-    database = SqliteExtDatabase('httpd-dev.db')
+
+    usage = "Usage: %prog [options] -n no-of-days -d database-name"
+    option_parser = OptionParser(usage=usage)
+    option_parser.add_option("-n", "--days", metavar="DAYS", help="Number of days", type="int"),
+    option_parser.add_option("-d", "--database", metavar="DB", help="Name of the database"),
+
+    (options, args) = option_parser.parse_args()
+
+    if not options.days or not options.database:
+        print (usage)
+        sys.exit()
+
+    database = SqliteExtDatabase('%s.db' % options.database)
     database_proxy.initialize(database)
     database.connect()
     database.create_tables([CommitToEmailDBO], safe=True)
-
-    NUMBER_OF_DAYS = 1000
 
     commits_from_unique_authors = CommitDBO.select(CommitDBO.Author).distinct()
     list_of_unique_authors = [re.search('<(.*)>', a.Author).group(1) for a in commits_from_unique_authors]
@@ -44,10 +54,10 @@ try:
                     if any(author_of_this_commit in s for s in common_users_of_git_and_emails):
                    
                         commit_date = date_parser.parse(commit.CommitDate)
-                        commit_from_date = commit_date - timedelta(days=NUMBER_OF_DAYS)
+                        commit_from_date = commit_date - timedelta(days=options.days)
                         commit_from_date = commit_from_date.strftime("%Y-%m-%d")
 
-                        commit_to_date = commit_date + timedelta(days=NUMBER_OF_DAYS)
+                        commit_to_date = commit_date + timedelta(days=options.days)
                         commit_to_date = commit_to_date.strftime("%Y-%m-%d")
 
                         emails_of_this_author = EmailDBO.select().where(EmailDBO.email_from.contains(author_of_this_commit), EmailDBO.email_date.between(commit_from_date, commit_to_date))
