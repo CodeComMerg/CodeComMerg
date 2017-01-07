@@ -60,7 +60,7 @@ class FileHistoryDBO(BaseModel):
 class EmailDBO(BaseModel):
     email_from = TextField(null=True)
     email_to = TextField(null=True)
-    email_date = TextField(null=True)
+    email_date = DateField(null=True)
     precedence = TextField(null=True)
     received_spf = TextField(null=True)
     return_path = TextField(null=True)
@@ -85,3 +85,8 @@ class EmailDBO(BaseModel):
     content_type = TextField(null=True)
     list_id = TextField(null=True)
     body_plain = TextField(null=True)
+
+
+class CommitToEmailDBO(BaseModel):
+    commit = ForeignKeyField(CommitDBO)
+    email = ForeignKeyField(EmailDBO)
