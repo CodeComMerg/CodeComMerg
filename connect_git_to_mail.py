@@ -8,7 +8,7 @@ from dateutil import parser as date_parser
 from optparse import OptionParser
 
 try:
-
+    # python connect_git_to_mail.py -n 500 -d httpd-dev
     usage = "Usage: %prog [options] -n no-of-days -d database-name"
     option_parser = OptionParser(usage=usage)
     option_parser.add_option("-n", "--days", metavar="DAYS", help="Number of days", type="int"),

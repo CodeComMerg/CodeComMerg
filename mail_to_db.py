@@ -8,6 +8,7 @@ import json
 from dateutil import parser as date_parser
 
 try:
+    # python mail_to_db.py -u 'http://mail-archives.apache.org/mod_mbox/httpd-dev/' -n 'httpd-dev' -d 'httpd-dev' -f mbox
     usage = "Usage: %prog [options] -u uri-to-email-archieve -n folder-name -d database-name -b pipermail or mbox"
     option_parser = OptionParser(usage=usage)
     option_parser.add_option("-u", "--uri", metavar="URI", help="URI to archieve"),
