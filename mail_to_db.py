@@ -5,6 +5,7 @@ from dbo import *
 from optparse import OptionParser
 import sys
 import json 
+from dateutil import parser as date_parser
 
 try:
     usage = "Usage: %prog [options] -u uri-to-email-archieve -n folder-name -d database-name -b pipermail or mbox"
@@ -27,10 +28,10 @@ try:
 
     print('Extracting information from %s to %s.db...' % (options.uri, options.database))
 
-    if options.backend is 'pipermail':
+    if options.backend == 'pipermail':
         pipermail = Pipermail(options.uri, options.name)
         messages = pipermail.fetch()
-    elif options.backend is 'mbox':    
+    elif options.backend == 'mbox':
         mbox = MBox(uri=options.uri, dirpath=options.name)
         messages = mbox.fetch()
 
@@ -53,7 +54,7 @@ try:
                     else:
                         email_to = 'NA'
                       
-                    email_date = data['Date']
+                    email_date = date_parser.parse(data['Date']).strftime("%Y-%m-%d")
                     precedence = data['Precedence']
                     if 'Received-SPF' in data:
                         received_spf = data['Received-SPF']
@@ -167,7 +168,7 @@ try:
             print('SUCCESS: %s emails saved to db.' % success_messages_count)                
             print('ERROR: Unable to save %s emails.' % error_messages_count)                
     except Exception as tex:
-        print('ERROR RDATABASE TRANSACTION')        
+        print('ERROR DATABASE TRANSACTION')        
         print(tex)
 
 except Exception as e:
