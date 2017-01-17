@@ -6,9 +6,10 @@ from optparse import OptionParser
 import sys
 import json 
 from dateutil import parser as date_parser
+import re
 
 try:
-    # python mail_to_db.py -u 'http://mail-archives.apache.org/mod_mbox/httpd-dev/' -n 'httpd-dev' -d 'httpd-dev' -f mbox
+    # python mail_to_db.py -u 'http://mail-archives.apache.org/mod_mbox/httpd-dev/' -n 'httpd-dev' -d 'httpd-dev' -b mbox
     usage = "Usage: %prog [options] -u uri-to-email-archieve -n folder-name -d database-name -b pipermail or mbox"
     option_parser = OptionParser(usage=usage)
     option_parser.add_option("-u", "--uri", metavar="URI", help="URI to archieve"),
@@ -128,6 +129,62 @@ try:
                             body_plain = data['body']['html']
                     else:
                         body_plain = 'NA'
+        
+                    email_to = email_to.replace("\r","\t")
+                    email_date = email_date.replace("\r","\t")
+                    precedence = precedence.replace("\r","\t")
+                    received_spf = received_spf.replace("\r","\t")
+                    return_path = return_path.replace("\r","\t")
+                    delivered_to = delivered_to.replace("\r","\t")
+                    subject = subject.replace("\r","\t")
+                    unixfrom = unixfrom.replace("\r","\t")
+                    reply_to = reply_to.replace("\r","\t")
+                    list_unsubscribe = list_unsubscribe.replace("\r","\t")
+                    x_asf_spam_status = x_asf_spam_status.replace("\r","\t")
+                    in_reply_to = in_reply_to.replace("\r","\t")
+                    received = received.replace("\r","\t")
+                    x_spam_check_by = x_spam_check_by.replace("\r","\t")
+                    references = references.replace("\r","\t")
+                    list_help = list_help.replace("\r","\t")
+                    content_transfer_encoding = content_transfer_encoding.replace("\r","\t")
+                    x_original_to = x_original_to.replace("\r","\t")
+                    user_agent = user_agent.replace("\r","\t")
+                    list_post = list_post.replace("\r","\t")
+                    message_id = message_id.replace("\r","\t")
+                    mailing_list = mailing_list.replace("\r","\t")
+                    mime_version = mime_version.replace("\r","\t") 
+                    content_type = content_type.replace("\r","\t")
+                    list_id = list_id.replace("\r","\t")
+
+
+                    email_to = email_to.replace(",","\,")
+                    email_date = email_date.replace(",","\,")
+                    precedence = precedence.replace(",","\,")
+                    received_spf = received_spf.replace(",","\,")
+                    return_path = return_path.replace(",","\,")
+                    delivered_to = delivered_to.replace(",","\,")
+                    subject = subject.replace(",","\,")
+                    unixfrom = unixfrom.replace(",","\,")
+                    reply_to = reply_to.replace(",","\,")
+                    list_unsubscribe = list_unsubscribe.replace(",","\,")
+                    x_asf_spam_status = x_asf_spam_status.replace(",","\,")
+                    in_reply_to = in_reply_to.replace(",","\,")
+                    received = received.replace(",","\,")
+                    x_spam_check_by = x_spam_check_by.replace(",","\,")
+                    references = references.replace(",","\,")
+                    list_help = list_help.replace(",","\,")
+                    content_transfer_encoding = content_transfer_encoding.replace(",","\,")
+                    x_original_to = x_original_to.replace(",","\,")
+                    user_agent = user_agent.replace(",","\,")
+                    list_post = list_post.replace(",","\,")
+                    message_id = message_id.replace(",","\,")
+                    mailing_list = mailing_list.replace(",","\,")
+                    mime_version = mime_version.replace(",","\,") 
+                    content_type = content_type.replace(",","\,")
+                    list_id = list_id.replace(",","\,")
+
+
+                    body_plain = re.escape(body_plain)
 
                     email_dbo = EmailDBO(
                                     email_from = email_from,

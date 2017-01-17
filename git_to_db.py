@@ -63,7 +63,7 @@ try:
                 CommitDate = data['CommitDate']
                 Author = data['Author']
 
-                message = data['message']
+                message = (data['message'])
                 Commit = data['Commit']
         
                 commit_dbo = CommitDBO(
