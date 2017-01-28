@@ -63,12 +63,35 @@ try:
                     else:
                         received_spf = 'NA'
                         
-                    return_path = data['Return-Path']
-                    delivered_to = data['Delivered-To']
-                    subject = data['Subject']
-                    unixfrom = data['unixfrom']
-                    reply_to = data['Reply-To']
-                    list_unsubscribe = data['list-unsubscribe']
+                    if 'Return-Path' in data:
+                        return_path = data['Return-Path']
+                    else:
+                        return_path = 'NA'
+
+                    if 'Delivered-To' in data:
+                        delivered_to = data['Delivered-To']
+                    else:
+                        delivered_to = 'NA'
+
+                    if 'Subject' in data:
+                        subject = data['Subject']
+                    else:
+                        subject = 'NA'
+
+                    if 'unixfrom' in data:
+                        unixfrom = data['unixfrom']
+                    else:
+                        unixfrom = 'NA'
+
+                    if 'Reply-To' in data:
+                        reply_to = data['Reply-To']
+                    else:
+                        reply_to = 'NA'
+
+                    if 'list-unsubscribe' in data:
+                        list_unsubscribe = data['list-unsubscribe']
+                    else:
+                        list_unsubscribe = 'NA'                       
 
                     if 'X-ASF-Spam-Status' in data:
                         x_asf_spam_status = data['X-ASF-Spam-Status']
@@ -80,7 +103,10 @@ try:
                     else:
                         in_reply_to = 'NA'
 
-                    received = data['Received']
+                    if 'Received' in data:
+                        received = data['Received']
+                    else:
+                        received = 'NA'    
 
                     if 'X-Spam-Check-By' in data:
                         x_spam_check_by = data['X-Spam-Check-By']
@@ -91,8 +117,11 @@ try:
                         references = data['References']
                     else:
                         references = 'NA'
-                    
-                    list_help = data['list-help']
+
+                    if 'list-help' in data:
+                        list_help = data['list-help']
+                    else:
+                        list_help = 'NA'    
 
                     if 'Content-Transfer-Encoding' in data:
                         content_transfer_encoding = data['Content-Transfer-Encoding']
@@ -106,9 +135,28 @@ try:
                     else:
                         user_agent = 'NA'
 
-                    list_post = data['List-Post']
-                    message_id = data['Message-ID']
-                    mailing_list = data['Mailing-List']
+
+                    if 'List-Post' in data:
+                        list_post = data['List-Post']
+                    else:
+                        list_post = 'NA'
+
+
+                    if 'List-Post' in data:
+                        list_post = data['List-Post']
+                    else:
+                        list_post = 'NA'
+
+
+                    if 'Message-ID' in data:
+                        message_id = data['Message-ID']
+                    else:
+                        message_id = 'NA'
+
+                    if 'Mailing-List' in data:
+                        mailing_list = data['Mailing-List']
+                    else:
+                        mailing_list = 'NA'
 
                     if 'MIME-Version' in data:
                         mime_version = data['MIME-Version']
@@ -120,7 +168,10 @@ try:
                     else:
                         content_type = 'NA'
 
-                    list_id = data['List-Id']
+                    if 'List-Id' in data:
+                        list_id = data['List-Id']
+                    else:
+                        list_id = 'NA'
 
                     if 'body' in data:
                         if 'plain' in data['body']:                        
