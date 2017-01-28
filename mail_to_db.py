@@ -57,7 +57,12 @@ try:
                         email_to = 'NA'
                       
                     email_date = date_parser.parse(data['Date']).strftime("%Y-%m-%d")
-                    precedence = data['Precedence']
+
+                    if 'Precedence' in data:
+                        precedence = data['Precedence']
+                    else:
+                        precedence = 'NA'                       
+
                     if 'Received-SPF' in data:
                         received_spf = data['Received-SPF']
                     else:
@@ -128,25 +133,20 @@ try:
                     else:
                         content_transfer_encoding = 'NA'
                     
-                    x_original_to = data['X-Original-To']
+                    if 'X-Original-To' in data:
+                        x_original_to = data['X-Original-To']
+                    else:
+                        x_original_to = 'NA'
 
                     if 'User-Agent' in data:
                         user_agent = data['User-Agent']
                     else:
                         user_agent = 'NA'
 
-
                     if 'List-Post' in data:
                         list_post = data['List-Post']
                     else:
                         list_post = 'NA'
-
-
-                    if 'List-Post' in data:
-                        list_post = data['List-Post']
-                    else:
-                        list_post = 'NA'
-
 
                     if 'Message-ID' in data:
                         message_id = data['Message-ID']
