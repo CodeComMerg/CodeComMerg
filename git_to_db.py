@@ -1,5 +1,5 @@
 from perceval.backend import uuid
-from perceval.backends.git import (Git,
+from perceval.backends.core.git import (Git,
                                    GitCommand,
                                    GitParser,
                                    GitRepository)

@@ -61,6 +61,7 @@ class EmailDBO(BaseModel):
     email_from = TextField(null=True)
     email_to = TextField(null=True)
     email_date = DateField(null=True)
+    email_date_modified = DateField(null=True)
     precedence = TextField(null=True)
     received_spf = TextField(null=True)
     return_path = TextField(null=True)

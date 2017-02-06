@@ -60,7 +60,7 @@ try:
                         commit_to_date = commit_date + timedelta(days=options.days)
                         commit_to_date = commit_to_date.strftime("%Y-%m-%d")
 
-                        emails_of_this_author = EmailDBO.select().where(EmailDBO.email_from.contains(author_of_this_commit), EmailDBO.email_date.between(commit_from_date, commit_to_date))
+                        emails_of_this_author = EmailDBO.select().where(EmailDBO.email_from.contains(author_of_this_commit), EmailDBO.email_date_modified.between(commit_from_date, commit_to_date))
                         print('[%s] Finding communication for commit # %s - %s by %s.' % (str(datetime.now()), commit.uuid, commit.message, commit.Author))
                         for email in emails_of_this_author:
                             total_connections_made+=1
