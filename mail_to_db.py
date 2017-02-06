@@ -1,9 +1,9 @@
-from perceval.backends.pipermail import Pipermail
-from perceval.backends.mbox import MBox, MBoxArchive
+from perceval.backends.core.pipermail import Pipermail
+from perceval.backends.core.mbox import MBox, MBoxArchive
 from playhouse.sqlite_ext import SqliteExtDatabase
 from dbo import *
 from optparse import OptionParser
-import sys
+import sys, traceback
 import json 
 from dateutil import parser as date_parser
 import re
@@ -18,6 +18,12 @@ try:
     option_parser.add_option("-b", "--backend", metavar="BACKEND", help="Name of the backend"),
 
     (options, args) = option_parser.parse_args()
+
+    # options.uri = 'http://mail-archives.apache.org/mod_mbox/httpd-dev/'
+    # options.name = 'httpd-dev-pm'
+    # options.database = 'httpd-dev-pm'
+    # options.backend = 'pipermail'
+
 
     if not options.uri or not options.name or not options.database or not options.backend:
         print (usage)
@@ -55,8 +61,12 @@ try:
                         email_to = data['To']
                     else:
                         email_to = 'NA'
-                      
-                    email_date = date_parser.parse(data['Date']).strftime("%Y-%m-%d")
+
+                    if 'Date' in data:
+                        email_date = data['Date']
+                        email_date_modified = date_parser.parse(data['Date']).strftime("%Y-%m-%d")
+                    else:
+                        email_date = '1970-01-01'
 
                     if 'Precedence' in data:
                         precedence = data['Precedence']
@@ -182,7 +192,7 @@ try:
                         body_plain = 'NA'
         
                     email_to = email_to.replace("\r","\t")
-                    email_date = email_date.replace("\r","\t")
+                    # email_date = email_date.replace("\r","\t")
                     precedence = precedence.replace("\r","\t")
                     received_spf = received_spf.replace("\r","\t")
                     return_path = return_path.replace("\r","\t")
@@ -209,7 +219,7 @@ try:
 
 
                     email_to = email_to.replace(",","\,")
-                    email_date = email_date.replace(",","\,")
+                    # email_date = email_date.replace(",","\,")
                     precedence = precedence.replace(",","\,")
                     received_spf = received_spf.replace(",","\,")
                     return_path = return_path.replace(",","\,")
@@ -236,37 +246,41 @@ try:
 
 
                     body_plain = re.escape(body_plain)
-
-                    email_dbo = EmailDBO(
-                                    email_from = email_from,
-                                    email_to = email_to,
-                                    email_date = email_date,
-                                    precedence = precedence,
-                                    received_spf = received_spf,
-                                    return_path = return_path,
-                                    delivered_to = delivered_to,
-                                    subject = subject,
-                                    unixfrom = unixfrom,
-                                    reply_to = reply_to,
-                                    list_unsubscribe = list_unsubscribe,
-                                    x_asf_spam_status = x_asf_spam_status,
-                                    in_reply_to = in_reply_to,
-                                    received = received,
-                                    x_spam_check_by = x_spam_check_by,
-                                    references = references,
-                                    list_help = list_help,
-                                    content_transfer_encoding = content_transfer_encoding,
-                                    x_original_to = x_original_to,
-                                    user_agent = user_agent,
-                                    list_post = list_post,
-                                    message_id = message_id,
-                                    mailing_list = mailing_list,
-                                    mime_version = mime_version, 
-                                    content_type = content_type,
-                                    list_id = list_id,
-                                    body_plain = body_plain,
-                    )
-                    email_dbo.save()
+                    try:
+                        email_dbo = EmailDBO(
+                                        email_from = email_from,
+                                        email_to = email_to,
+                                        email_date = email_date,
+                                        email_date_modified = email_date_modified,
+                                        precedence = precedence,
+                                        received_spf = received_spf,
+                                        return_path = return_path,
+                                        delivered_to = delivered_to,
+                                        subject = subject,
+                                        unixfrom = unixfrom,
+                                        reply_to = reply_to,
+                                        list_unsubscribe = list_unsubscribe,
+                                        x_asf_spam_status = x_asf_spam_status,
+                                        in_reply_to = in_reply_to,
+                                        received = received,
+                                        x_spam_check_by = x_spam_check_by,
+                                        references = references,
+                                        list_help = list_help,
+                                        content_transfer_encoding = content_transfer_encoding,
+                                        x_original_to = x_original_to,
+                                        user_agent = user_agent,
+                                        list_post = list_post,
+                                        message_id = message_id,
+                                        mailing_list = mailing_list,
+                                        mime_version = mime_version, 
+                                        content_type = content_type,
+                                        list_id = list_id,
+                                        body_plain = body_plain,
+                        )
+                        email_dbo.save()
+                    except ValueError as ve:
+                        print(ve)
+                        raise
                     print('Saving email from %s to %s on %s...' % (email_from, email_to, email_date))
 
                 except Exception as mex:
@@ -277,6 +291,7 @@ try:
             print('SUCCESS: %s emails saved to db.' % success_messages_count)                
             print('ERROR: Unable to save %s emails.' % error_messages_count)                
     except Exception as tex:
+        traceback.print_exc()
         print('ERROR DATABASE TRANSACTION')        
         print(tex)
 
