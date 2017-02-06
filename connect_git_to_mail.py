@@ -1,5 +1,3 @@
-from perceval.backends.pipermail import Pipermail
-from perceval.backends.mbox import MBox, MBoxArchive
 from playhouse.sqlite_ext import SqliteExtDatabase
 from dbo import *
 import re
@@ -71,6 +69,6 @@ try:
             print('Error : %s.' % ex)
             raise
             
-    print('Program completed successfully. %s Total connections are made.' % total_connections_made)
+    print('Program completed successfully. %s Total connections are made from the population of %s.' % (total_connections_made, len(common_users_of_git_and_emails)))
 except Exception as ex:
     print('Program exited with an error. %s' % ex)
